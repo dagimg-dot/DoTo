@@ -33,7 +33,7 @@ class HorizontalChipListState extends State<HorizontalChipList> {
             widget.onTap(_selectedIndex);
           },
           child: Container(
-            margin: const EdgeInsets.only(top: 20.0, left: 15.0, right: 15.0),
+            margin: const EdgeInsets.only(top: 20.0, left: 12.0, right: 12.0),
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             height: 30,
