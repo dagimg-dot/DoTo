@@ -18,6 +18,7 @@ class SplashPageState extends State<SplashPage> {
       splash: Image.asset('assets/icons/splash.png'),
       splashTransition: SplashTransition.fadeTransition,
       nextScreen: const MyHomePage(),
+      duration: 1000,
     );
   }
 }
