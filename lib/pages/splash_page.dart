@@ -1,5 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:doto/pages/home_page.dart';
+import 'package:doto/pages/navigator_page.dart';
 import 'package:doto/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class SplashPageState extends State<SplashPage> {
       backgroundColor: primaryColor,
       splash: Image.asset('assets/icons/splash.png'),
       splashTransition: SplashTransition.fadeTransition,
-      nextScreen: const MyHomePage(),
+      nextScreen: const NavigatorPage(),
       duration: 1000,
     );
   }
