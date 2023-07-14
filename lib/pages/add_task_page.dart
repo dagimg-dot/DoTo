@@ -1,7 +1,11 @@
 import 'dart:math';
 
+import 'package:doto/dao/task_dao.dart';
 import 'package:doto/utils/constants.dart';
 import 'package:flutter/material.dart';
+
+import '../dao/task_dao_impl.dart';
+import '../models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -19,11 +23,28 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.initState();
   }
 
-  void _addTask() {
+  void _addTask() async{
     final String name = taskNameController.text;
     final String description = taskDescController.text;
+
+    if(name.isEmpty || description.isEmpty) {
+      return;
+    }
+
     print(name);
     print(description);
+
+    int id = Random().nextInt(1000);
+    print(id);
+
+    Task task = Task(id: id, name: name, description: description);
+
+    int taskID = await TaskDAOImpl().insertTask(task);
+    print("Task Saved");
+
+    TaskDAOImpl().getTask(taskID).then((value) => print(value));
+
+
     // add task to list or database
     // clear text fields
     taskNameController.clear();
@@ -82,7 +103,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       ),
                     ), // <-- Text
                     backgroundColor: secondaryColor,
-                    onPressed: () {},
+                    onPressed: _addTask,
                   ),
                 ],
               ),
