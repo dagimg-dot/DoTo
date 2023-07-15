@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:doto/dao/task_dao.dart';
 import 'package:doto/utils/constants.dart';
 import 'package:flutter/material.dart';
 
