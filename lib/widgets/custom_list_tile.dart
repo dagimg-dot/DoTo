@@ -1,4 +1,5 @@
 import 'package:doto/dao/task_dao_impl.dart';
+import 'package:doto/state_holder.dart';
 import 'package:flutter/material.dart';
 
 import '../models/task.dart';
@@ -88,6 +89,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     content: Text("Task deleted"),
                     behavior: SnackBarBehavior.floating,
                     elevation: 10.0,
+                    backgroundColor: secondaryColor,
                   ),
                 );
               },
@@ -99,9 +101,17 @@ class _CustomListTileState extends State<CustomListTile> {
     );
   }
 
+  // This function has bugs
   void handleEdit() {
     // edit the task
     print("editing ${widget.task.name}");
+    // change the page to index 1
+    // Navigator.pop(context);
+    // GlobalState.isEditing = true;
+    // setState(() {
+    //   GlobalState.selectedPage = 1;
+    // });
+    // GlobalState.selectedTask = widget.task;
   }
 
   @override
