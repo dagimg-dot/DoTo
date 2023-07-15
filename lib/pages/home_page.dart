@@ -14,16 +14,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int globalFilter = 0;
   List<Task> tasks = [];
 
   // this function is passed to CustomListTile widget to update the list of tasks
   void updateTasks() {
     setState(() {
-      filterTasks(0);
+      filterTasks(globalFilter);
     });
   }
 
   filterTasks(int filter) async {
+    globalFilter = filter;
     List<Task> fetchedTasks = await TaskDAOImpl().getAllTasks();
     List<Task> filteredTasks = [];
     switch (filter) {
