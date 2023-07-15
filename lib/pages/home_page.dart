@@ -1,3 +1,4 @@
+import 'package:doto/utils/constants.dart';
 import 'package:doto/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -96,12 +97,24 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                return CustomListTile(task: tasks[index], updateTasks: updateTasks);
-              },
-            ),
+            child: tasks.isNotEmpty
+                ? ListView.builder(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      return CustomListTile(
+                          task: tasks[index], updateTasks: updateTasks);
+                    },
+                  )
+                : Container(
+                    margin: const EdgeInsets.only(top: 20.0),
+                    child: const Text(
+                      "You have no tasks",
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: secondaryColor,
+                      ),
+                    ),
+                  ),
           ),
         ],
       ),
