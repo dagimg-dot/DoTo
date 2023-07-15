@@ -1,5 +1,4 @@
 import 'package:doto/dao/task_dao_impl.dart';
-import 'package:doto/state_holder.dart';
 import 'package:flutter/material.dart';
 
 import '../models/task.dart';
@@ -16,45 +15,29 @@ class CustomListTile extends StatefulWidget {
 }
 
 class _CustomListTileState extends State<CustomListTile> {
-  void handleLongPress() {
+  void handleLongPress(BuildContext context) {
+    List<Widget> buttons = [
+      modalButton(context, "Edit", Icons.edit, handleEdit),
+      const SizedBox(height: 10.0),
+      modalButton(context, "Delete", Icons.delete, handleDelete)
+    ];
     // show a menu with options to edit or delete the task on long press
-    showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(40),
-          topRight: Radius.circular(40),
-        ),
-      ),
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 120,
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(40),
-              topRight: Radius.circular(40),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: secondaryColor.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 2,
-                offset: const Offset(0, 0), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              modalButton(context, "Edit", Icons.edit, handleEdit),
-              const SizedBox(height: 10.0),
-              modalButton(context, "Delete", Icons.delete, handleDelete)
-            ],
-          ),
-        );
-      },
+    modalBottomSheet(
+      context,
+      buttons,
     );
+  }
+
+  void handleTap(BuildContext context) {
+    List<Widget> buttons = [
+      modalButton(context, "Mark as Pending", Icons.timelapse, handlePending),
+      const SizedBox(height: 10.0),
+      modalButton(
+          context, "Mark as Done", Icons.check_circle_outline, handleDone),
+      const SizedBox(height: 10.0),
+      modalButton(context, "Mark as Cancelled", Icons.close, handleCancelled)
+    ];
+    modalBottomSheet(context, buttons);
   }
 
   void handleDelete() {
@@ -84,14 +67,7 @@ class _CustomListTileState extends State<CustomListTile> {
                 TaskDAOImpl().deleteTask(widget.task.id);
                 // update the list of tasks
                 widget.updateTasks();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Task deleted"),
-                    behavior: SnackBarBehavior.floating,
-                    elevation: 10.0,
-                    backgroundColor: secondaryColor,
-                  ),
-                );
+                showSnack(context, "Task deleted successfully");
               },
               child: const Text("Delete"),
             ),
@@ -114,10 +90,53 @@ class _CustomListTileState extends State<CustomListTile> {
     // GlobalState.selectedTask = widget.task;
   }
 
+  void handleDone() async {
+    // mark the task as done
+    Task task = await TaskDAOImpl().getTask(widget.task.id);
+    if (task.getStatus() != 1) {
+      TaskDAOImpl().updateStatus(widget.task.id, 1);
+      // update the list of tasks
+      widget.updateTasks();
+      showSnack(context, "Task marked as done");
+    } else {
+      showSnack(context, "The task is already done");
+    }
+  }
+
+  void handleCancelled() async {
+    // mark the task as cancelled
+    Task task = await TaskDAOImpl().getTask(widget.task.id);
+    if (task.getStatus() != 2) {
+      TaskDAOImpl().updateStatus(widget.task.id, 2);
+      // update the list of tasks
+      widget.updateTasks();
+      showSnack(context, "Task marked as cancelled");
+    } else {
+      showSnack(context, "The task is already cancelled");
+    }
+  }
+
+  void handlePending() async {
+    Task task = await TaskDAOImpl().getTask(widget.task.id);
+    if (task.getStatus() != 0) {
+      TaskDAOImpl().updateStatus(widget.task.id, 0);
+      // update the list of tasks
+      widget.updateTasks();
+      showSnack(context, "Task marked as pending");
+    } else {
+      showSnack(context, "The task is already pending");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: handleLongPress,
+      onLongPress: () {
+        handleLongPress(context);
+      },
+      onTap: () {
+        handleTap(context);
+      },
       child: Container(
         margin: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -135,18 +154,6 @@ class _CustomListTileState extends State<CustomListTile> {
         ),
         child: Row(
           children: [
-            // checkbox
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: secondaryColor,
-                  width: 2.0,
-                ),
-              ),
-            ),
             const SizedBox(width: 10.0),
             // task title
             Expanded(
@@ -157,8 +164,8 @@ class _CustomListTileState extends State<CustomListTile> {
                     widget.task.name,
                     style: const TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      color: secondaryColor,
                     ),
                   ),
                   const SizedBox(height: 5.0),
@@ -174,19 +181,75 @@ class _CustomListTileState extends State<CustomListTile> {
               ),
             ),
             // task time
-            const Text(
-              '10:00 AM',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey,
-              ),
-            ),
+            taskStatusIcon(widget.task.status)
           ],
         ),
       ),
     );
   }
+
+  Icon taskStatusIcon(int status) {
+    switch (status) {
+      case 0:
+        return const Icon(
+          Icons.timelapse,
+          color: secondaryColor,
+        );
+      case 1:
+        return const Icon(
+          Icons.check_circle_outline,
+          color: secondaryColor,
+        );
+      case 2:
+        return const Icon(
+          Icons.cancel_outlined,
+          color: secondaryColor,
+        );
+      default:
+        return const Icon(
+          Icons.timelapse,
+          color: secondaryColor,
+        );
+    }
+  }
+}
+
+Future<dynamic> modalBottomSheet(context, List<Widget> buttons) {
+  return showModalBottomSheet(
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(40),
+        topRight: Radius.circular(40),
+      ),
+    ),
+    context: context,
+    builder: (context) {
+      return Container(
+        height: buttons.length == 3 ? 120 : 180,
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(40),
+            topRight: Radius.circular(40),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: secondaryColor.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 2,
+              offset: const Offset(0, 0), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            ...buttons,
+          ],
+        ),
+      );
+    },
+  );
 }
 
 GestureDetector modalButton(
@@ -198,7 +261,6 @@ GestureDetector modalButton(
     },
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      // color: secondaryColor,
       child: Row(
         children: [
           Icon(icon, color: secondaryColor),
@@ -213,6 +275,19 @@ GestureDetector modalButton(
           ),
         ],
       ),
+    ),
+  );
+}
+
+showSnack(BuildContext context, String content) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(content),
+      behavior: SnackBarBehavior.floating,
+      elevation: 10.0,
+      backgroundColor: secondaryColor,
+      margin: const EdgeInsets.all(20.0),
+      duration: const Duration(seconds: 2),
     ),
   );
 }
