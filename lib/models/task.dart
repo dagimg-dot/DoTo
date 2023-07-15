@@ -31,6 +31,10 @@ class Task {
     return description;
   }
 
+  int getStatus() {
+    return status;
+  }
+
   void setName(String name) {
     this.name = name;
   }
