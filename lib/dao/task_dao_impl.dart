@@ -46,4 +46,11 @@ class TaskDAOImpl implements TaskDAO {
 
     return Future.value(tasks);
   }
+
+  @override
+  Future<int> deleteTask(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(id.toString());
+    return id;
+  }
 }
