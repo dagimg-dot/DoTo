@@ -23,30 +23,20 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.initState();
   }
 
-  void _addTask() async{
+  void _addTask() async {
     final String name = taskNameController.text;
     final String description = taskDescController.text;
 
-    if(name.isEmpty || description.isEmpty) {
+    if (name.isEmpty || description.isEmpty) {
       return;
     }
 
-    print(name);
-    print(description);
-
     int id = Random().nextInt(1000);
-    print(id);
 
     Task task = Task(id: id, name: name, description: description);
 
-    int taskID = await TaskDAOImpl().insertTask(task);
-    print("Task Saved");
+    await TaskDAOImpl().insertTask(task);
 
-    TaskDAOImpl().getTask(taskID).then((value) => print(value));
-
-
-    // add task to list or database
-    // clear text fields
     taskNameController.clear();
     taskDescController.clear();
   }
