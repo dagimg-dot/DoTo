@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:doto/dao/task_dao_impl.dart';
 import 'package:flutter/material.dart';
 
 import '../models/task.dart';
+import '../pages/navigator_page.dart';
 import '../utils/constants.dart';
 
 class CustomListTile extends StatefulWidget {
@@ -45,11 +48,17 @@ class _CustomListTileState extends State<CustomListTile> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Delete Task"),
+          title: const Text(
+            "Delete Task",
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: const Text(
             "Are you sure you want to delete this task?",
             style: TextStyle(
-              color: Colors.black,
+              color: secondaryColor,
               fontSize: 16.0,
             ),
           ),
@@ -88,6 +97,14 @@ class _CustomListTileState extends State<CustomListTile> {
     //   GlobalState.selectedPage = 1;
     // });
     // GlobalState.selectedTask = widget.task;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const NavigatorPage(
+          selectedPage: 1,
+        ),
+      ),
+    );
   }
 
   void handleDone() async {
@@ -154,8 +171,6 @@ class _CustomListTileState extends State<CustomListTile> {
         ),
         child: Row(
           children: [
-            const SizedBox(width: 10.0),
-            // task title
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
