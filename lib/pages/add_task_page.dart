@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:doto/utils/constants.dart';
@@ -38,6 +40,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     taskNameController.clear();
     taskDescController.clear();
+
+    showSnack(context, "Task added successully");
   }
 
   @override
@@ -125,4 +129,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
       ),
     );
   }
+}
+
+showSnack(BuildContext context, String content) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(content),
+      behavior: SnackBarBehavior.floating,
+      elevation: 10.0,
+      backgroundColor: secondaryColor,
+      margin: const EdgeInsets.all(20.0),
+      duration: const Duration(seconds: 2),
+    ),
+  );
 }
