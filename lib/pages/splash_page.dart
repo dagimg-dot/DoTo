@@ -17,7 +17,9 @@ class SplashPageState extends State<SplashPage> {
       backgroundColor: primaryColor,
       splash: Image.asset('assets/icons/splash.png'),
       splashTransition: SplashTransition.fadeTransition,
-      nextScreen: const NavigatorPage(),
+      nextScreen: const NavigatorPage(
+        selectedPage: 0,
+      ),
       duration: 1000,
     );
   }

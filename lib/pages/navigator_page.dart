@@ -6,7 +6,7 @@ import '../utils/constants.dart';
 import 'add_task_page.dart';
 
 class NavigatorPage extends StatefulWidget {
-  const NavigatorPage({super.key});
+  const NavigatorPage({super.key, required int selectedPage});
 
   @override
   State<NavigatorPage> createState() => _NavigatorPageState();
