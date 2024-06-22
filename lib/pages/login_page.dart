@@ -38,19 +38,27 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                User? user = await _auth.signInWithEmailAndPassword(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-                if (user != null) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const NavigatorPage(selectedPage: 0)),
+                try {
+                  User? user = await _auth.signInWithEmailAndPassword(
+                    _emailController.text,
+                    _passwordController.text,
                   );
-                } else {
-                  // Handle login error
+                  if (user != null) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const NavigatorPage(selectedPage: 0)),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
+                    // color of the snackbar
+                  );
                 }
               },
               child: const Text('Login'),

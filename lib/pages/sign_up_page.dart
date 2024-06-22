@@ -37,19 +37,26 @@ class _SignUpPageState extends State<SignUpPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                User? user = await _auth.createUserWithEmailAndPassword(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-                if (user != null) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const NavigatorPage(selectedPage: 0)),
+                try {
+                  User? user = await _auth.createUserWithEmailAndPassword(
+                    _emailController.text,
+                    _passwordController.text,
                   );
-                } else {
-                  // Handle sign-up error
+                  if (user != null) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const NavigatorPage(selectedPage: 0)),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Sign Up'),

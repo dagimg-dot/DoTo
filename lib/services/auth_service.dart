@@ -11,8 +11,7 @@ class AuthService {
           email: email, password: password);
       return result.user;
     } catch (e) {
-      print(e.toString());
-      return null;
+      rethrow;
     }
   }
 
@@ -24,8 +23,7 @@ class AuthService {
           email: email, password: password);
       return result.user;
     } catch (e) {
-      print(e.toString());
-      return null;
+      rethrow;
     }
   }
 
@@ -34,8 +32,7 @@ class AuthService {
     try {
       return await _auth.signOut();
     } catch (e) {
-      print(e.toString());
-      return null;
+      rethrow;
     }
   }
 }
