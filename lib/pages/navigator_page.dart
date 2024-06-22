@@ -25,6 +25,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: ListTile(
           leading: Container(
             width: 60,
@@ -41,7 +42,10 @@ class _NavigatorPageState extends State<NavigatorPage> {
               ),
             ),
           ),
-          title: const Text('Hello, Dagim'),
+          title: const Text('Hello, Dagim', style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),),
           subtitle: const Text(
             'Manage your tasks !',
             style: TextStyle(color: Colors.white),
